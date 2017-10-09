@@ -1,0 +1,10 @@
+/home/gabriel/Desktop/GutenLib/FrontEnd/bin/Debug/netcoreapp2.0/FrontEnd.deps.json
+/home/gabriel/Desktop/GutenLib/FrontEnd/bin/Debug/netcoreapp2.0/FrontEnd.runtimeconfig.json
+/home/gabriel/Desktop/GutenLib/FrontEnd/bin/Debug/netcoreapp2.0/FrontEnd.runtimeconfig.dev.json
+/home/gabriel/Desktop/GutenLib/FrontEnd/bin/Debug/netcoreapp2.0/FrontEnd.dll
+/home/gabriel/Desktop/GutenLib/FrontEnd/bin/Debug/netcoreapp2.0/FrontEnd.pdb
+/home/gabriel/Desktop/GutenLib/FrontEnd/obj/Debug/netcoreapp2.0/FrontEnd.csproj.CoreCompileInputs.cache
+/home/gabriel/Desktop/GutenLib/FrontEnd/obj/Debug/netcoreapp2.0/FrontEnd.AssemblyInfoInputs.cache
+/home/gabriel/Desktop/GutenLib/FrontEnd/obj/Debug/netcoreapp2.0/FrontEnd.AssemblyInfo.cs
+/home/gabriel/Desktop/GutenLib/FrontEnd/obj/Debug/netcoreapp2.0/FrontEnd.dll
+/home/gabriel/Desktop/GutenLib/FrontEnd/obj/Debug/netcoreapp2.0/FrontEnd.pdb
