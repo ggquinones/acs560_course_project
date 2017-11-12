@@ -1,0 +1,51 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v2.0",
+    "signature": "62f084f2a931afe17c6de941d97e86f7122be68d"
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v2.0": {
+      "FrontEnd2/1.0.0": {
+        "dependencies": {
+          "Microsoft.AspNet.WebApi.Client": "5.2.3",
+          "VersOne.Epub": "2.0.1"
+        },
+        "runtime": {
+          "FrontEnd2.dll": {}
+        }
+      },
+      "Microsoft.AspNet.WebApi.Client/5.2.3": {
+        "runtime": {
+          "lib/net45/System.Net.Http.Formatting.dll": {}
+        }
+      },
+      "VersOne.Epub/2.0.1": {
+        "runtime": {
+          "lib/netstandard2.0/VersOne.Epub.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "FrontEnd2/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Microsoft.AspNet.WebApi.Client/5.2.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-3kiI8peSXbXHDDrRuo+QaX0iCEVRe0nvn2dBDRw656uPX32UalbBlSIDUDlJxu05eau4tnuhsikiUuugvvoUoQ==",
+      "path": "microsoft.aspnet.webapi.client/5.2.3",
+      "hashPath": "microsoft.aspnet.webapi.client.5.2.3.nupkg.sha512"
+    },
+    "VersOne.Epub/2.0.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-f2uOm5/jXp6nKrMYyiqnzsDrOYopJc6soInWzPe5y38sgkxtfMpLtkBPbmDHwgSoSy6l/1S8Z74We/K4PopPdA==",
+      "path": "versone.epub/2.0.1",
+      "hashPath": "versone.epub.2.0.1.nupkg.sha512"
+    }
+  }
+}

@@ -2,6 +2,15 @@
   "version": 3,
   "targets": {
     ".NETCoreApp,Version=v2.0": {
+      "Microsoft.AspNet.WebApi.Client/5.2.3": {
+        "type": "package",
+        "compile": {
+          "lib/net45/System.Net.Http.Formatting.dll": {}
+        },
+        "runtime": {
+          "lib/net45/System.Net.Http.Formatting.dll": {}
+        }
+      },
       "Microsoft.NETCore.App/2.0.0": {
         "type": "package",
         "dependencies": {
@@ -196,10 +205,32 @@
         "build": {
           "build/netstandard2.0/NETStandard.Library.targets": {}
         }
+      },
+      "VersOne.Epub/2.0.1": {
+        "type": "package",
+        "compile": {
+          "lib/netstandard2.0/VersOne.Epub.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard2.0/VersOne.Epub.dll": {}
+        }
       }
     }
   },
   "libraries": {
+    "Microsoft.AspNet.WebApi.Client/5.2.3": {
+      "sha512": "3kiI8peSXbXHDDrRuo+QaX0iCEVRe0nvn2dBDRw656uPX32UalbBlSIDUDlJxu05eau4tnuhsikiUuugvvoUoQ==",
+      "type": "package",
+      "path": "microsoft.aspnet.webapi.client/5.2.3",
+      "files": [
+        "lib/net45/System.Net.Http.Formatting.dll",
+        "lib/net45/System.Net.Http.Formatting.xml",
+        "lib/portable-wp8+netcore45+net45+wp81+wpa81/System.Net.Http.Formatting.dll",
+        "lib/portable-wp8+netcore45+net45+wp81+wpa81/System.Net.Http.Formatting.xml",
+        "microsoft.aspnet.webapi.client.5.2.3.nupkg.sha512",
+        "microsoft.aspnet.webapi.client.nuspec"
+      ]
+    },
     "Microsoft.NETCore.App/2.0.0": {
       "sha512": "/mzXF+UtZef+VpzzN88EpvFq5U6z4rj54ZMq/J968H6pcvyLOmcupmTRpJ3CJm8ILoCGh9WI7qpDdiKtuzswrQ==",
       "type": "package",
@@ -656,11 +687,23 @@
         "netstandard.library.2.0.0.nupkg.sha512",
         "netstandard.library.nuspec"
       ]
+    },
+    "VersOne.Epub/2.0.1": {
+      "sha512": "f2uOm5/jXp6nKrMYyiqnzsDrOYopJc6soInWzPe5y38sgkxtfMpLtkBPbmDHwgSoSy6l/1S8Z74We/K4PopPdA==",
+      "type": "package",
+      "path": "versone.epub/2.0.1",
+      "files": [
+        "lib/netstandard2.0/VersOne.Epub.dll",
+        "versone.epub.2.0.1.nupkg.sha512",
+        "versone.epub.nuspec"
+      ]
     }
   },
   "projectFileDependencyGroups": {
     ".NETCoreApp,Version=v2.0": [
-      "Microsoft.NETCore.App >= 2.0.0"
+      "Microsoft.AspNet.WebApi.Client >= 5.2.3",
+      "Microsoft.NETCore.App >= 2.0.0",
+      "VersOne.Epub >= 2.0.1"
     ]
   },
   "packageFolders": {
@@ -670,11 +713,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/home/gabriel/Desktop/GutenLib/FrontEnd/FrontEnd.csproj",
-      "projectName": "FrontEnd",
-      "projectPath": "/home/gabriel/Desktop/GutenLib/FrontEnd/FrontEnd.csproj",
+      "projectUniqueName": "/home/gabriel/Desktop/GutenLib/FrontEnd2/FrontEnd2.csproj",
+      "projectName": "FrontEnd2",
+      "projectPath": "/home/gabriel/Desktop/GutenLib/FrontEnd2/FrontEnd2.csproj",
       "packagesPath": "/home/gabriel/.nuget/packages/",
-      "outputPath": "/home/gabriel/Desktop/GutenLib/FrontEnd/obj/",
+      "outputPath": "/home/gabriel/Desktop/GutenLib/FrontEnd2/obj/",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "/usr/share/dotnet/sdk/NuGetFallbackFolder"
@@ -706,6 +749,14 @@
             "target": "Package",
             "version": "2.0.0",
             "autoReferenced": true
+          },
+          "Microsoft.AspNet.WebApi.Client": {
+            "target": "Package",
+            "version": "5.2.3"
+          },
+          "VersOne.Epub": {
+            "target": "Package",
+            "version": "2.0.1"
           }
         },
         "imports": [
@@ -715,5 +766,17 @@
         "warn": true
       }
     }
-  }
+  },
+  "logs": [
+    {
+      "code": "NU1701",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Package 'Microsoft.AspNet.WebApi.Client 5.2.3' was restored using '.NETFramework,Version=v4.6.1' instead of the project target framework '.NETCoreApp,Version=v2.0'. This package may not be fully compatible with your project.",
+      "libraryId": "Microsoft.AspNet.WebApi.Client",
+      "targetGraphs": [
+        ".NETCoreApp,Version=v2.0"
+      ]
+    }
+  ]
 }
