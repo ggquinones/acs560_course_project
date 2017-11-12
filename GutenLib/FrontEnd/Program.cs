@@ -43,10 +43,12 @@ namespace HttpClientSample
     {
         static HttpClient client = new HttpClient();
 
-        static async Task<Byte[]> LoadBookAsync(string path)
+        static async Task<Byte[]> GetBookAsync(int bookid)
         {
+            
+            string bookPath = "getBook?bookid="+bookid;
             Byte[] content = null;
-            HttpResponseMessage response = await client.GetAsync(path);
+            HttpResponseMessage response = await client.GetAsync(bookPath);
             if (response.IsSuccessStatusCode)
             {
                 content = await response.Content.ReadAsByteArrayAsync();
@@ -54,12 +56,39 @@ namespace HttpClientSample
             return content;
         }
 
-        static void Main()
+        static async Task SaveBookAsync()
         {
-            RunAsync().Wait();
+            client.BaseAddress = new Uri("http://gutenberg-library-ggquinones.c9users.io/");
+            client.DefaultRequestHeaders.Accept.Clear();
+            Byte[] file = await GetBookAsync(1);
+            File.WriteAllBytes("copy.epub", file);
+
+            Console.WriteLine("File saved");
+
         }
 
-        static async Task RunAsync()
+        static async Task GetUserLibAsync(int userid)
+        {
+            client.BaseAddress = new Uri("http://gutenberg-library-ggquinones.c9users.io/");
+            client.DefaultRequestHeaders.Accept.Clear();
+            string bookPath = "GetUserLib?userid="+userid;
+            HttpResponseMessage response = await client.GetAsync(bookPath);
+            
+            string libJSON="";
+            if (response.IsSuccessStatusCode)
+            {
+                 libJSON= await response.Content.ReadAsStringAsync();
+            }
+            
+            Console.WriteLine(libJSON);            
+        }
+
+        static void Main()
+        {
+            GetUserLibAsync(1).Wait();
+        }
+
+        /*static async Task RunAsync()
         {
             client.BaseAddress = new Uri("http://gutenberg-library-ggquinones.c9users.io/");
             client.DefaultRequestHeaders.Accept.Clear();
@@ -68,7 +97,7 @@ namespace HttpClientSample
             try
             {     
                 Byte [] file;
-                file = await LoadBookAsync("getBook?file=ChristmasCarol.epub");
+                file = await LoadBookAsync("getBook?file=Frankenstein.epub");
                 File.WriteAllBytes("copy.epub", file);
                 Console.WriteLine("File saved");
                 EpubBook book = await EpubReader.ReadBookAsync("copy.epub");
@@ -84,15 +113,7 @@ namespace HttpClientSample
                     chps += chp.Title +"\n";
                 }   
                 Console.WriteLine(chps); 
-
-
-                EpubContent bookContent = book.Content;
-                Dictionary<string, EpubByteContentFile> images = bookContent.Images;
-                EpubByteContentFile firstImage = images.Values.First();
-
-                // Content type (e.g. EpubContentType.IMAGE_JPEG, EpubContentType.IMAGE_PNG)
-                EpubContentType contentType = firstImage.ContentType;
-
+                byte[] coverImageContent = book.CoverImage;     
                 if(coverImageContent != null)
                 {
                     Console.WriteLine("Has cover image");
@@ -106,7 +127,7 @@ namespace HttpClientSample
                 Console.WriteLine(e.Message);
             }
             Console.ReadLine();
-        }
+        }*/
     }
 
     
