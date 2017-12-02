@@ -14,43 +14,34 @@ namespace GutenLib
     public partial class MainForm : Form
     {
         private Library library;
-        private BookLabel[] recentShelf;
-        private BookLabel[] libraryShelf;
-        private int recentShelfPosInLib;
-        private int libraryShelfPosInLib;
+        private BookLabel[] shelf;
+        private int currentShelfPosition;
         private Book currentBookBeingRead;
+        private const int NUM_SHELF_POSITIONS = 27;
 
         public MainForm(Library library)
         {
             this.library = library;
-            recentShelfPosInLib = 0;
-            libraryShelfPosInLib = 0;
+            shelf = new BookLabel[NUM_SHELF_POSITIONS];
+            currentShelfPosition = 0;
             InitializeComponent();
-
-            recentShelf = new BookLabel[6];
-            libraryShelf = new BookLabel[6];
-            foreach(Control c in pnlContent.Controls)
+            
+            foreach(Control c in pnlLibrary.Controls)
             {
                 if(c is Label)
                 {
                     Label lbl = (Label)c;
                     if (lbl.Name.Contains("LibraryBook"))
                     {
-                        int index = int.Parse((string)lbl.Tag) - 7;
-                        libraryShelf[index] = new BookLabel(library.GetBook(index), lbl);
-                    }
-                    if (lbl.Name.Contains("RecentBook"))
-                    {
-                        int index = int.Parse((string)lbl.Tag) - 1;
-                        recentShelf[index] = new BookLabel(library.GetBook(index), lbl);
+                        int index = int.Parse((string)lbl.Tag);
+                        shelf[index] = new BookLabel(library.GetBook(index), lbl);
                     }
                 }
             }
             
-            for(int i = 0; i < 6; i++)
+            for(int i = 0; i < NUM_SHELF_POSITIONS; i++)
             {
-                recentShelf[i].SetCover();
-                libraryShelf[i].SetCover();
+                shelf[i].SetCover();
             }
 
             // for testing
@@ -71,13 +62,14 @@ namespace GutenLib
             }
         }
 
+        // does not yet support recent sorting
         private void SortLibrary(object sender, EventArgs e)
         {
             RadioButton button = (RadioButton)sender;
             lblLibrary.Text = "Library | " + button.Text;
-            libraryShelfPosInLib = 0;
+            currentShelfPosition = 0;
 
-            if (button.Text.Equals("All"))
+            if (button.Text.Equals("Recent"))
             {
                 library.Randomize();
             }
@@ -94,93 +86,63 @@ namespace GutenLib
                 library.SortBySubject();
             }
 
-            for(int i = 0; i < 6; i++)
+            for(int i = 0; i < NUM_SHELF_POSITIONS; i++)
             {
-                libraryShelf[i].Book = library.GetBook(i);
-                libraryShelf[i].SetCover();
+                shelf[i].Book = library.GetBook(i);
+                shelf[i].SetCover();
             }
 
         }
-
-        // needs to be edited so recent cycles through recent library
+        
         private void CycleShelf(object sender, EventArgs e)
         {
             Label lbl = (Label)sender;
             int libSize = library.Count;
-            if (lbl.Tag.Equals("recent"))
+
+            if (lbl.Text.Equals("<"))
             {
-                if (lbl.Text.Equals("<"))
+                currentShelfPosition--;
+                if (currentShelfPosition < 0)
                 {
-                    recentShelfPosInLib--;
-                    if(recentShelfPosInLib < 0)
-                    {
-                        recentShelfPosInLib = libSize - 1;
-                    }
-                }
-                else
-                {
-                    recentShelfPosInLib++;
-                    if(recentShelfPosInLib >= libSize)
-                    {
-                        recentShelfPosInLib = 0;
-                    }
+                    currentShelfPosition = libSize - 1;
                 }
             }
             else
             {
-                if (lbl.Text.Equals("<"))
+                currentShelfPosition++;
+                if (currentShelfPosition >= libSize)
                 {
-                    libraryShelfPosInLib--;
-                    if (libraryShelfPosInLib < 0)
-                    {
-                        libraryShelfPosInLib = libSize - 1;
-                    }
-                }
-                else
-                {
-                    libraryShelfPosInLib++;
-                    if (libraryShelfPosInLib >= libSize)
-                    {
-                        libraryShelfPosInLib = 0;
-                    }
+                    currentShelfPosition = 0;
                 }
             }
 
-            UpdateShelf((string)lbl.Tag);
+            UpdateShelf();
+        }
+
+        private void ClearCovers()
+        {
+            currentShelfPosition = 0;
+            for(int i = 0; i < NUM_SHELF_POSITIONS; i++)
+            {
+                shelf[i].Clear();
+            }
         }
         
-        private void UpdateShelf(string shelfType)
+        private void UpdateShelf()
         {
-            int position;
             int size = library.Count;
-            if (shelfType.Equals("recent"))
+            int position = currentShelfPosition;
+            for (int i = 0; i < size; i++)
             {
-                position = recentShelfPosInLib;
-                for (int i = 0; i < 6; i++)
+                if (position >= size)
                 {
-                    if (position >= size)
-                    {
-                        position = 0;
-                    }
-                    recentShelf[i].Book = library.GetBook(position);
-                    recentShelf[i].SetCover();
-                    position++;
+                    position = 0;
                 }
+                shelf[i].Book = library.GetBook(position);
+                shelf[i].SetCover();
+                position++;
             }
-            if (shelfType.Equals("library"))
-            {
-                position = libraryShelfPosInLib;
-                for (int i = 0; i < 6; i++)
-                {
-                    if (position >= size)
-                    {
-                        position = 0;
-                    }
-                    libraryShelf[i].Book = library.GetBook(position);
-                    libraryShelf[i].SetCover();
-                    position++;
-                }
-            }
+            
         }
         
         private void OpenOrCloseBook(object sender, EventArgs e)
@@ -193,10 +155,9 @@ namespace GutenLib
             }
             else
             {
-                for(int i = 0; i < 6; i++)
+                for(int i = 0; i < NUM_SHELF_POSITIONS; i++)
                 {
-                    recentShelf[i].SetCover();
-                    libraryShelf[i].SetCover();
+                    shelf[i].SetCover();
                 }
                 bl.SetInfo();
             }
@@ -205,21 +166,9 @@ namespace GutenLib
         private BookLabel DetermineBookLabel(object sender)
         {
             Label lbl = (Label)sender;
-            BookLabel bl;
-
             int index = int.Parse((string)lbl.Tag);
-            if (index < 7)
-            {
-                index -= 1;
-                bl = recentShelf[index];
-            }
-            else
-            {
-                index -= 7;
-                bl = libraryShelf[index];
-            }
 
-            return bl;
+            return shelf[index];
         }
 
         private void ReadBook(object sender, EventArgs e)
@@ -227,13 +176,18 @@ namespace GutenLib
             BookLabel bl = DetermineBookLabel(sender);
             currentBookBeingRead = bl.Book;
             //temp
+            if(currentBookBeingRead is null)
+            {
+                return;
+            }
+            /*
             EpubBook epubBook = ServerProxy.GetEpubBookById(currentBookBeingRead.Id);
             currentBookBeingRead.Cover = Book.GetCoverFromEpub(epubBook);
-            currentBookBeingRead.Pages = Book.GetPagesFromEpub(epubBook);
+            currentBookBeingRead.Pages = Book.GetPagesFromEpub(epubBook);*/
 
             lblTitle.Text = currentBookBeingRead.Title + " by " + currentBookBeingRead.Author;
+            pnlLibrary.Visible = false;
             pnlReader.Visible = true;
-            pnlReader.BringToFront();
             htmlReader.DocumentText = currentBookBeingRead.Page;
             htmlReader.Focus();
         }
@@ -258,6 +212,7 @@ namespace GutenLib
         private void CloseReader()
         {
             pnlReader.Visible = false;
+            pnlLibrary.Visible = true;
             currentBookBeingRead = null;
         }
 
@@ -293,20 +248,182 @@ namespace GutenLib
             }
         }
 
-        private void Login(object sender, EventArgs e)
+        private void EditLibraryEvent(object sender, EventArgs e)
         {
-            if (txtUsername.Text.ToLower().Equals("admin") && txtPassword.Text.Equals("password"))
+            if (sender is Label)
             {
-                pnlLogin.Visible = false;
-                lblStatus.Text = "";
-                pnlMaster.Visible = true;
+                ClearCovers();
+                pnlLibrary.Visible = false;
+                LoadUserLibraryListView();
+                pnlEditLibrary.Visible = true;
+            }
+            if (sender is Button)
+            {
+                UpdateShelf();
+                pnlLibrary.Visible = true;
+                pnlEditLibrary.Visible = false;
+            }
+        }
+
+        private void SwitchEditLibrary(object sender, EventArgs e)
+        {
+            Label lbl = (Label)sender;
+            ClearSearch(null, null);
+            if (lbl.Tag.Equals("user"))
+            {
+                lblUserLibrary.BorderStyle = BorderStyle.Fixed3D;
+                lblGlobalLibrary.BorderStyle = BorderStyle.None;
+                btnAddToLibrary.Enabled = false;
+                btnRemoveFromLibrary.Enabled = true;
+                LoadUserLibraryListView();
+            }
+            if (lbl.Tag.Equals("global"))
+            {
+                lblUserLibrary.BorderStyle = BorderStyle.None;
+                lblGlobalLibrary.BorderStyle = BorderStyle.Fixed3D;
+                btnAddToLibrary.Enabled = true;
+                btnRemoveFromLibrary.Enabled = false;
+                LoadGlobalLibraryListView();
+            }
+        }
+
+        private void ClearSearch(object sender, EventArgs e)
+        {
+            txtSearch.Text = "";
+            if(lblUserLibrary.BorderStyle == BorderStyle.Fixed3D)
+            {
+                LoadUserLibraryListView();
+            }
+            if(lblGlobalLibrary.BorderStyle == BorderStyle.Fixed3D)
+            {
+                LoadGlobalLibraryListView();
+            }
+        }
+
+        private void RemoveBook(object sender, EventArgs e)
+        {
+            if(lstLibraryView.SelectedItems.Count > 0)
+            {
+                ListViewItem item = lstLibraryView.SelectedItems[0];
+                string title = item.SubItems[0].Text;
+                string author = item.SubItems[1].Text;
+                if(library.RemoveBook(title, author))
+                {
+                    // book removed successfully
+                    lstLibraryView.Items.Remove(item);
+                }
+            }
+        }
+
+        private void ClearListView()
+        {
+            lstLibraryView.Clear();
+            lstLibraryView.Columns.Add("Title", 600);
+            lstLibraryView.Columns.Add("Author", 350);
+            lstLibraryView.Columns.Add("Subject", 286);
+        }
+
+        private void SearchListView(object sender, EventArgs e)
+        {
+            string searchQuery = txtSearch.Text;
+            int size = lstLibraryView.Items.Count;
+
+            if (lblUserLibrary.BorderStyle == BorderStyle.Fixed3D)
+            {
+                List<ListViewItem> items = new List<ListViewItem>();
+                foreach(ListViewItem item in lstLibraryView.Items)
+                {
+                    string itemToCompare = "";
+                    if (radSearchTitle.Checked)
+                    {
+                        itemToCompare = item.SubItems[0].Text;
+                    }
+                    if (radSearchAuthor.Checked)
+                    {
+                        itemToCompare = item.SubItems[1].Text;
+                    }
+                    if (radSearchSubject.Checked)
+                    {
+                        itemToCompare = item.SubItems[2].Text;
+                    }
+                    if (itemToCompare.ToLower().Contains(searchQuery.ToLower()))
+                    {
+                        items.Add(item);
+                    }
+                }
+
+                ClearListView();
+                foreach(ListViewItem item in items)
+                {
+                    lstLibraryView.Items.Add(item);
+                }
             }
             else
             {
-                lblStatus.Text = "Incorrect username and password combination";
+                // search logic for global library
+            }
+        }
+
+        private void LoadUserLibraryListView()
+        {
+            ClearListView();
+
+            int size = library.Count;
+            for(int i = 0; i < size; i++)
+            {
+                Book book = library.GetBook(i);
+                string[] arr = new string[3];
+                arr[0] = book.Title;
+                arr[1] = book.Author;
+                arr[2] = book.Subject;
+                ListViewItem item = new ListViewItem(arr);
+                lstLibraryView.Items.Add(item);
+            }
+        }
+
+        private void LoadGlobalLibraryListView()
+        {
+            ClearListView();
+        }
+
+        private void ChangePasswordEvent(object sender, EventArgs e)
+        {
+            PasswordChangerForm form = new PasswordChangerForm();
+            form.ShowDialog();
+        }
+        
+        private void Login(object sender, EventArgs e)
+        {
+            // validate username and password combination
+            if (true)
+            {
+                pnlLogin.Visible = false;
+                pnlLibrary.Visible = true;
+            }
+            else
+            {
+                lblLoginStatus.Text = "ERROR: Incorrect username and password combination";
                 txtUsername.Text = "";
                 txtPassword.Text = "";
             }
+        }
+        
+        private void CheckUsernamePassword(object sender, EventArgs e)
+        {
+            if(!txtUsername.Text.Equals("") && !txtPassword.Text.Equals(""))
+            {
+                btnLogin.Enabled = true;
+            }
+            else
+            {
+                btnLogin.Enabled = false;
+            }
+        }
+
+        private void NewUserCreation(object sender, EventArgs e)
+        {
+            NewUserForm form = new NewUserForm();
+            form.ShowDialog();
         }
 
         protected override CreateParams CreateParams

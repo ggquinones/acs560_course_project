@@ -12,7 +12,6 @@ namespace GutenLib
     {
         private List<Book> library;
 
-
         // used to instantiate library from folder
         public Library()
         {
@@ -97,6 +96,23 @@ namespace GutenLib
                 {
                     library.RemoveAt(i);
                     bookRemoved = true;
+                    break;
+                }
+            }
+            return bookRemoved;
+        }
+
+        public bool RemoveBook(string title, string author)
+        {
+            bool bookRemoved = false;
+            int librarySize = library.Count;
+            for(int i = 0; i < librarySize; i++)
+            {
+                if (library[i].Title.Equals(title) && library[i].Author.Equals(author))
+                {
+                    library.RemoveAt(i);
+                    bookRemoved = true;
+                    break;
                 }
             }
             return bookRemoved;
@@ -104,7 +120,15 @@ namespace GutenLib
 
         public Book GetBook(int index)
         {
-            return library[index];
+            if(index <= library.Count - 1)
+            {
+                return library[index];
+            }
+            else
+            {
+                return null;
+            }
+            
         }
 
         public void SortByTitle()

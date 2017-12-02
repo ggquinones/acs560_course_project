@@ -302,14 +302,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="GutenLib.exe" size="3549672">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="GutenLib.exe" size="9911272">
       <assemblyIdentity name="GutenLib" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>Zc3dLR7G1OGT+AZH9TYdqvliUS2Lqrhy+Ai9e6IJnm4=</dsig:DigestValue>
+        <dsig:DigestValue>FUjkhpP+gqp9Z6g60ukYEqnbtcP8C8g67mE+NS346c8=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>

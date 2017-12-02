@@ -52,7 +52,6 @@ namespace GutenLib
 
         public static Library GetUserLibraryById(int userid)
         {
-            Library library = null;
             request = WebRequest.Create(url + "GetUserLib?userid=" + userid);
             request.ContentType = "application/json; charset=utf-8";
             string result;

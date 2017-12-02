@@ -112,3 +112,5 @@ C:\Users\Joseph\source\repos\GutenLib\GutenLib\bin\Debug\GutenLib.exe.manifest
 C:\Users\Joseph\source\repos\GutenLib\GutenLib\bin\Debug\GutenLib.application
 C:\Users\Joseph\source\repos\GutenLib\GutenLib\obj\Debug\GutenLib.exe.manifest
 C:\Users\Joseph\source\repos\GutenLib\GutenLib\obj\Debug\GutenLib.application
+C:\Users\Joseph\source\repos\GutenLib\GutenLib\obj\Debug\GutenLib.NewUserForm.resources
+C:\Users\Joseph\source\repos\GutenLib\GutenLib\obj\Debug\GutenLib.PasswordChangerForm.resources

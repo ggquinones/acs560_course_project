@@ -32,16 +32,32 @@ namespace GutenLib
             get { return isOpen; }
         }
 
+        public void Clear()
+        {
+            book = null;
+            label.BackColor = Color.Transparent;
+            label.Image = null;
+            isOpen = false;
+            label.Visible = false;
+        }
+
         public void SetCover()
         {
+            if(book is null)
+            {
+                Clear();
+                return;
+            }
+            else
+            {
+                label.Visible = true;
+            }
+
             isOpen = false;
             Image cover = book.Cover;
-            if(cover != null)
-            {
-                cover = new Bitmap(cover, 153, 210);
-            }
             if (cover != null)
             {
+                cover = new Bitmap(cover, 153, 210);
                 label.Text = "";
                 label.BackColor = Color.WhiteSmoke;
                 label.Image = cover;
@@ -58,6 +74,16 @@ namespace GutenLib
 
         public void SetInfo()
         {
+            if(book is null)
+            {
+                label.Visible = false;
+                return;
+            }
+            else
+            {
+                label.Visible = true;
+            }
+
             isOpen = true;
             label.Image = null;
             label.ForeColor = Color.Black;

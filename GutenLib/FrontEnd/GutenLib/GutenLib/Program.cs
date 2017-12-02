@@ -16,7 +16,8 @@ namespace GutenLib
         {
             //ServerProxy.GetUserLibraryById(1).Wait();
             //Library libraryFromFiles = new Library();
-            Library library = ServerProxy.GetUserLibraryById(2);
+            //Library library = ServerProxy.GetUserLibraryById(2);
+            Library library = new Library();
             //library.CombineLibraries(libraryFromFiles);
 
             Application.EnableVisualStyles();
