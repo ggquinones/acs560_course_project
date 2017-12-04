@@ -72,7 +72,6 @@
             // 
             // btnSubmitChanges
             // 
-            this.btnSubmitChanges.Enabled = false;
             this.btnSubmitChanges.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnSubmitChanges.Location = new System.Drawing.Point(58, 134);
             this.btnSubmitChanges.Name = "btnSubmitChanges";
@@ -91,7 +90,6 @@
             this.txtRepeatNew.Size = new System.Drawing.Size(108, 23);
             this.txtRepeatNew.TabIndex = 11;
             this.txtRepeatNew.UseSystemPasswordChar = true;
-            this.txtRepeatNew.TextChanged += new System.EventHandler(this.CheckNewPassword);
             // 
             // lblRepeatNew
             // 
@@ -113,7 +111,6 @@
             this.txtNewPassword.Size = new System.Drawing.Size(108, 23);
             this.txtNewPassword.TabIndex = 9;
             this.txtNewPassword.UseSystemPasswordChar = true;
-            this.txtNewPassword.TextChanged += new System.EventHandler(this.CheckNewPassword);
             // 
             // lblNewPassword
             // 

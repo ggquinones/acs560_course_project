@@ -15,29 +15,29 @@ namespace GutenLib
         private string title;
         private string author;
         private string subject;
+        private string url;
+        private string datetime;        // represents when book was last read
         private Image cover;
         private List<string> pages;
         private int currentPage;
 
-        public Book(int id, string title, string author, string subject)
+        public Book(int id, string title, string author, string subject, string url)
         {
             this.id = id;
             this.title = title;
             this.author = author;
             this.subject = subject;
-            this.currentPage = 1;
-            pages = new List<string>();
+            this.url = url;
         }
 
-        public Book(int id, string title, string author, string subject, Image cover, List<string> pages)
+        public Book(int id, string title, string author, string subject, string url, string datetime)
         {
             this.id = id;
             this.title = title;
             this.author = author;
             this.subject = subject;
-            this.currentPage = 1;
-            this.cover = cover;
-            this.pages = pages;
+            this.url = url;
+            this.datetime = datetime;
         }
 
         public int Id
@@ -88,6 +88,17 @@ namespace GutenLib
                     return subject;
                 }
             }
+        }
+
+        public string Datetime
+        {
+            get { return datetime; }
+            set { datetime = value; }
+        }
+
+        public string Url
+        {
+            get { return url; }
         }
 
         public Image Cover

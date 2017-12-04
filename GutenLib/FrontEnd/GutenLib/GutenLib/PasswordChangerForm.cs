@@ -17,8 +17,9 @@ namespace GutenLib
             InitializeComponent();
         }
 
-        private void CheckNewPassword(object sender, EventArgs e)
+        private bool CheckNewPassword()
         {
+            bool passwordsAreSame = false;
             if (!txtRepeatNew.Text.Equals(txtNewPassword.Text))
             {
                 lblChangePasswordStatus.ForeColor = Color.Red;
@@ -26,13 +27,20 @@ namespace GutenLib
             }
             else
             {
-                btnSubmitChanges.Enabled = true;
                 lblChangePasswordStatus.Text = "";
+                passwordsAreSame = true;
             }
+            return passwordsAreSame;
         }
 
         private void SubmitChanges(object sender, EventArgs e)
         {
+            // checks if new password and repeat of new password are the same
+            if (!CheckNewPassword())
+            {
+                return;
+            }
+
             // checks if current password and new password are same
             if (txtCurrentPassword.Text.Equals(txtNewPassword.Text))
             {

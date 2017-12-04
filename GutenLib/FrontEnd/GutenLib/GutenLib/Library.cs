@@ -13,6 +13,7 @@ namespace GutenLib
         private List<Book> library;
 
         // used to instantiate library from folder
+        /*
         public Library()
         {
             library = new List<Book>();
@@ -39,7 +40,7 @@ namespace GutenLib
                 }
                 
             }
-        }
+        }*/
 
         public Library(List<Book> library)
         {
@@ -86,36 +87,52 @@ namespace GutenLib
             }
         }
 
-        public bool RemoveBook(Book book)
+        public int RemoveBook(Book book)
         {
-            bool bookRemoved = false;
+            int bookRemoved = -1;
             int librarySize = library.Count;
             for(int i = 0; i < librarySize; i++)
             {
                 if(library[i].Id == book.Id)
                 {
+                    bookRemoved = book.Id;
                     library.RemoveAt(i);
-                    bookRemoved = true;
                     break;
                 }
             }
             return bookRemoved;
         }
 
-        public bool RemoveBook(string title, string author)
+        // returns book id, where book id == -1 means no book was removed
+        public int RemoveBook(string title, string author)
         {
-            bool bookRemoved = false;
+            int bookRemoved = -1;
             int librarySize = library.Count;
             for(int i = 0; i < librarySize; i++)
             {
                 if (library[i].Title.Equals(title) && library[i].Author.Equals(author))
                 {
+                    bookRemoved = library[i].Id;
                     library.RemoveAt(i);
-                    bookRemoved = true;
                     break;
                 }
             }
             return bookRemoved;
+        }
+
+        public int GetBookId(string title, string author)
+        {
+            int id = -1;
+            int librarySize = library.Count;
+            for (int i = 0; i < librarySize; i++)
+            {
+                if (library[i].Title.Equals(title) && library[i].Author.Equals(author))
+                {
+                    id = library[i].Id;
+                    break;
+                }
+            }
+            return id;
         }
 
         public Book GetBook(int index)
@@ -156,11 +173,17 @@ namespace GutenLib
                 return x.Subject.CompareTo(y.Subject);
             });
         }
-
-        public void Randomize()
+        
+        public void SortByRecent()
         {
+            library.Sort(delegate (Book x, Book y)
+            {
+                return x.Datetime.CompareTo(y.Datetime);
+            });
+            /*
             Random rand = new Random();
             library = library.OrderBy(x => rand.Next()).ToList();
+            */
         }
     }
 }

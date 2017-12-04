@@ -74,8 +74,6 @@
             this.htmlReader = new System.Windows.Forms.WebBrowser();
             this.lblTitle = new System.Windows.Forms.Label();
             this.lblClose = new System.Windows.Forms.Label();
-            this.lblNext = new System.Windows.Forms.Label();
-            this.lblPrevious = new System.Windows.Forms.Label();
             this.pnlLoginCenter = new System.Windows.Forms.Panel();
             this.lblPromptNewUser = new System.Windows.Forms.Label();
             this.lblGutenLib = new System.Windows.Forms.Label();
@@ -760,8 +758,6 @@
             this.pnlReader.Controls.Add(this.htmlReader);
             this.pnlReader.Controls.Add(this.lblTitle);
             this.pnlReader.Controls.Add(this.lblClose);
-            this.pnlReader.Controls.Add(this.lblNext);
-            this.pnlReader.Controls.Add(this.lblPrevious);
             this.pnlReader.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlReader.Location = new System.Drawing.Point(0, 0);
             this.pnlReader.Margin = new System.Windows.Forms.Padding(2);
@@ -804,34 +800,6 @@
             this.lblClose.Text = "close";
             this.lblClose.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.lblClose.Click += new System.EventHandler(this.NavigateBook);
-            // 
-            // lblNext
-            // 
-            this.lblNext.BackColor = System.Drawing.Color.Transparent;
-            this.lblNext.Font = new System.Drawing.Font("Arial", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblNext.Location = new System.Drawing.Point(1222, 818);
-            this.lblNext.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.lblNext.Name = "lblNext";
-            this.lblNext.Size = new System.Drawing.Size(459, 37);
-            this.lblNext.TabIndex = 2;
-            this.lblNext.Tag = "next";
-            this.lblNext.Text = "next >>";
-            this.lblNext.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.lblNext.Click += new System.EventHandler(this.NavigateBook);
-            // 
-            // lblPrevious
-            // 
-            this.lblPrevious.BackColor = System.Drawing.Color.Transparent;
-            this.lblPrevious.Font = new System.Drawing.Font("Arial", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblPrevious.Location = new System.Drawing.Point(5, 818);
-            this.lblPrevious.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.lblPrevious.Name = "lblPrevious";
-            this.lblPrevious.Size = new System.Drawing.Size(459, 37);
-            this.lblPrevious.TabIndex = 1;
-            this.lblPrevious.Tag = "previous";
-            this.lblPrevious.Text = "<< previous";
-            this.lblPrevious.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.lblPrevious.Click += new System.EventHandler(this.NavigateBook);
             // 
             // pnlLoginCenter
             // 
@@ -1036,6 +1004,7 @@
             this.btnAddToLibrary.TabIndex = 5;
             this.btnAddToLibrary.Text = "Add To Library";
             this.btnAddToLibrary.UseVisualStyleBackColor = false;
+            this.btnAddToLibrary.Click += new System.EventHandler(this.AddBook);
             // 
             // btnSearch
             // 
@@ -1143,8 +1112,8 @@
             this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(1687, 860);
             this.Controls.Add(this.pnlEditLibrary);
-            this.Controls.Add(this.pnlLogin);
             this.Controls.Add(this.pnlLibrary);
+            this.Controls.Add(this.pnlLogin);
             this.Controls.Add(this.pnlReader);
             this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
@@ -1186,8 +1155,6 @@
         private System.Windows.Forms.Label lblLibrary;
         private System.Windows.Forms.Panel pnlReader;
         private System.Windows.Forms.Label lblClose;
-        private System.Windows.Forms.Label lblNext;
-        private System.Windows.Forms.Label lblPrevious;
         private System.Windows.Forms.WebBrowser htmlReader;
         private System.Windows.Forms.Label lblTitle;
         private System.Windows.Forms.Label lblLibraryBook10;

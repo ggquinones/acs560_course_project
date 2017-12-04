@@ -17,24 +17,31 @@ namespace GutenLib
             InitializeComponent();
         }
 
-        private void CheckNewUserPassword(object sender, EventArgs e)
+        private bool CheckNewUserPassword()
         {
             if (!txtRepeatPassNew.Text.Equals(txtPasswordNew.Text))
             {
                 lblStatusNewUser.ForeColor = Color.Red;
                 lblStatusNewUser.Text = "ERROR: Password and repeat of password are not the same";
+                return false;
             }
             else
             {
-                btnSubmitNew.Enabled = true;
                 lblStatusNewUser.Text = "";
+                return true;
             }
         }
 
         private void SubmitNewUserChanges(object sender, EventArgs e)
         {
+            // validates password and repeat password are same
+            if (!CheckNewUserPassword())
+            {
+                return;
+            }
+
             // validate username selection
-            if (false)
+            if (ServerProxy.UsernameExistsInDB(txtUsernameNew.Text))
             {
                 lblStatusNewUser.ForeColor = Color.Red;
                 lblStatusNewUser.Text = "ERROR: Selected username not available";
@@ -42,9 +49,9 @@ namespace GutenLib
                 txtRepeatPassNew.Text = "";
                 return;
             }
-
+            
             // attempt to update database
-            if (false)
+            if (ServerProxy.AddUserToDB(txtUsernameNew.Text, txtPasswordNew.Text))
             {
                 lblStatusNewUser.ForeColor = Color.Green;
                 lblStatusNewUser.Text = "New user successfully created";

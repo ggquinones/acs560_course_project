@@ -14,14 +14,17 @@ namespace GutenLib
     public partial class MainForm : Form
     {
         private Library library;
+        private Library gutenLibrary;
         private BookLabel[] shelf;
         private int currentShelfPosition;
         private Book currentBookBeingRead;
         private const int NUM_SHELF_POSITIONS = 27;
+        private int user_id = -1;
 
-        public MainForm(Library library)
+        public MainForm(Library gutenLibrary)
         {
-            this.library = library;
+            library = null;
+            this.gutenLibrary = gutenLibrary;
             shelf = new BookLabel[NUM_SHELF_POSITIONS];
             currentShelfPosition = 0;
             InitializeComponent();
@@ -34,18 +37,24 @@ namespace GutenLib
                     if (lbl.Name.Contains("LibraryBook"))
                     {
                         int index = int.Parse((string)lbl.Tag);
-                        shelf[index] = new BookLabel(library.GetBook(index), lbl);
+                        shelf[index] = new BookLabel(null, lbl);
                     }
                 }
             }
-            
-            for(int i = 0; i < NUM_SHELF_POSITIONS; i++)
+        }
+
+        public void SetUpLibraryView()
+        {
+            // gets library
+            library = ServerProxy.GetUserLibrary(user_id, gutenLibrary);
+
+            // links books in library to booklabel objects
+            for (int i = 0; i < NUM_SHELF_POSITIONS; i++)
             {
+                shelf[i].Book = library.GetBook(i);
                 shelf[i].SetCover();
             }
 
-            // for testing
-            Console.WriteLine("Number of books: " + library.Count);
         }
 
         private void ShowOrHideOptions(object sender, EventArgs e)
@@ -61,8 +70,7 @@ namespace GutenLib
                 lblShowOptions.Text = "Show Options";
             }
         }
-
-        // does not yet support recent sorting
+        
         private void SortLibrary(object sender, EventArgs e)
         {
             RadioButton button = (RadioButton)sender;
@@ -71,7 +79,7 @@ namespace GutenLib
 
             if (button.Text.Equals("Recent"))
             {
-                library.Randomize();
+                library.SortByRecent();
             }
             if (button.Text.Equals("Title"))
             {
@@ -175,7 +183,6 @@ namespace GutenLib
         {
             BookLabel bl = DetermineBookLabel(sender);
             currentBookBeingRead = bl.Book;
-            //temp
             if(currentBookBeingRead is null)
             {
                 return;
@@ -184,12 +191,15 @@ namespace GutenLib
             EpubBook epubBook = ServerProxy.GetEpubBookById(currentBookBeingRead.Id);
             currentBookBeingRead.Cover = Book.GetCoverFromEpub(epubBook);
             currentBookBeingRead.Pages = Book.GetPagesFromEpub(epubBook);*/
-
+            
             lblTitle.Text = currentBookBeingRead.Title + " by " + currentBookBeingRead.Author;
             pnlLibrary.Visible = false;
             pnlReader.Visible = true;
-            htmlReader.DocumentText = currentBookBeingRead.Page;
+            //htmlReader.DocumentText = currentBookBeingRead.Page;
+            htmlReader.Navigate(currentBookBeingRead.Url);
             htmlReader.Focus();
+            bl.Book.Datetime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+            
         }
 
         private void NavigateBook(object sender, EventArgs e)
@@ -199,6 +209,7 @@ namespace GutenLib
             {
                 CloseReader();
             }
+            /*
             if (label.Tag.Equals("previous"))
             {
                 PreviousPage();
@@ -206,7 +217,7 @@ namespace GutenLib
             if (label.Tag.Equals("next"))
             {
                 NextPage();
-            }
+            }*/
         }
 
         private void CloseReader()
@@ -216,12 +227,14 @@ namespace GutenLib
             currentBookBeingRead = null;
         }
 
+        // deprecated
         private void PreviousPage()
         {
             currentBookBeingRead.PreviousPage();
             htmlReader.DocumentText = currentBookBeingRead.Page;
         }
 
+        // deprecated
         private void NextPage()
         {
             currentBookBeingRead.NextPage();
@@ -234,6 +247,7 @@ namespace GutenLib
             {
                 e.IsInputKey = true;
             }
+            /*
             if(e.KeyCode == Keys.Left)
             {
                 PreviousPage();
@@ -241,7 +255,7 @@ namespace GutenLib
             if(e.KeyCode == Keys.Right)
             {
                 NextPage();
-            }
+            }*/
             if(e.KeyCode == Keys.Escape)
             {
                 CloseReader();
@@ -256,6 +270,10 @@ namespace GutenLib
                 pnlLibrary.Visible = false;
                 LoadUserLibraryListView();
                 pnlEditLibrary.Visible = true;
+                lblUserLibrary.BorderStyle = BorderStyle.Fixed3D;
+                lblGlobalLibrary.BorderStyle = BorderStyle.None;
+                btnAddToLibrary.Enabled = false;
+                btnRemoveFromLibrary.Enabled = true;
             }
             if (sender is Button)
             {
@@ -307,10 +325,29 @@ namespace GutenLib
                 ListViewItem item = lstLibraryView.SelectedItems[0];
                 string title = item.SubItems[0].Text;
                 string author = item.SubItems[1].Text;
-                if(library.RemoveBook(title, author))
+                int bookRemoved = library.RemoveBook(title, author);
+                if(bookRemoved != -1)
                 {
                     // book removed successfully
+                    ServerProxy.RemoveBookFromUserLibrary(user_id, bookRemoved);
                     lstLibraryView.Items.Remove(item);
+                }
+            }
+        }
+
+        private void AddBook(object sender, EventArgs e)
+        {
+            if (lstLibraryView.SelectedItems.Count > 0)
+            {
+                ListViewItem item = lstLibraryView.SelectedItems[0];
+                string title = item.SubItems[0].Text;
+                string author = item.SubItems[1].Text;
+                int id = gutenLibrary.GetBookId(title, author);
+                if (id != -1)
+                {
+                    // book added successfully
+                    ServerProxy.AddBookToUserLibrary(user_id, id);
+                    //library = ServerProxy.GetUserLibrary(user_id, gutenLibrary);
                 }
             }
         }
@@ -328,40 +365,34 @@ namespace GutenLib
             string searchQuery = txtSearch.Text;
             int size = lstLibraryView.Items.Count;
 
-            if (lblUserLibrary.BorderStyle == BorderStyle.Fixed3D)
+            List<ListViewItem> items = new List<ListViewItem>();
+            foreach(ListViewItem item in lstLibraryView.Items)
             {
-                List<ListViewItem> items = new List<ListViewItem>();
-                foreach(ListViewItem item in lstLibraryView.Items)
+                string itemToCompare = "";
+                if (radSearchTitle.Checked)
                 {
-                    string itemToCompare = "";
-                    if (radSearchTitle.Checked)
-                    {
-                        itemToCompare = item.SubItems[0].Text;
-                    }
-                    if (radSearchAuthor.Checked)
-                    {
-                        itemToCompare = item.SubItems[1].Text;
-                    }
-                    if (radSearchSubject.Checked)
-                    {
-                        itemToCompare = item.SubItems[2].Text;
-                    }
-                    if (itemToCompare.ToLower().Contains(searchQuery.ToLower()))
-                    {
-                        items.Add(item);
-                    }
+                    itemToCompare = item.SubItems[0].Text;
                 }
+                if (radSearchAuthor.Checked)
+                {
+                    itemToCompare = item.SubItems[1].Text;
+                }
+                if (radSearchSubject.Checked)
+                {
+                    itemToCompare = item.SubItems[2].Text;
+                }
+                if (itemToCompare.ToLower().Contains(searchQuery.ToLower()))
+                {
+                    items.Add(item);
+                }
+            }
 
-                ClearListView();
-                foreach(ListViewItem item in items)
-                {
-                    lstLibraryView.Items.Add(item);
-                }
-            }
-            else
+            ClearListView();
+            foreach(ListViewItem item in items)
             {
-                // search logic for global library
+                lstLibraryView.Items.Add(item);
             }
+            
         }
 
         private void LoadUserLibraryListView()
@@ -384,6 +415,18 @@ namespace GutenLib
         private void LoadGlobalLibraryListView()
         {
             ClearListView();
+
+            int size = gutenLibrary.Count;
+            for(int i = 0; i < size; i++)
+            {
+                Book book = gutenLibrary.GetBook(i);
+                string[] arr = new string[3];
+                arr[0] = book.Title;
+                arr[1] = book.Author;
+                arr[2] = book.Subject;
+                ListViewItem item = new ListViewItem(arr);
+                lstLibraryView.Items.Add(item);
+            }
         }
 
         private void ChangePasswordEvent(object sender, EventArgs e)
@@ -394,11 +437,15 @@ namespace GutenLib
         
         private void Login(object sender, EventArgs e)
         {
+            user_id = ServerProxy.ValidateUser(txtUsername.Text, txtPassword.Text);
+            //Console.WriteLine(user_id);
+
             // validate username and password combination
-            if (true)
+            if (user_id != -1)
             {
                 pnlLogin.Visible = false;
                 pnlLibrary.Visible = true;
+                SetUpLibraryView();
             }
             else
             {

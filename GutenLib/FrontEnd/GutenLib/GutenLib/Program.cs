@@ -14,15 +14,10 @@ namespace GutenLib
         [STAThread]
         static void Main()
         {
-            //ServerProxy.GetUserLibraryById(1).Wait();
-            //Library libraryFromFiles = new Library();
-            //Library library = ServerProxy.GetUserLibraryById(2);
-            Library library = new Library();
-            //library.CombineLibraries(libraryFromFiles);
-
+            Library gutenLibrary = ServerProxy.GetGutenLibrary();
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new MainForm(library));
+            Application.Run(new MainForm(gutenLibrary));
         }
     }
 }
