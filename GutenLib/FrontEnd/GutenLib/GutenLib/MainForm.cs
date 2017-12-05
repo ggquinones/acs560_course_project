@@ -347,7 +347,7 @@ namespace GutenLib
                 {
                     // book added successfully
                     ServerProxy.AddBookToUserLibrary(user_id, id);
-                    //library = ServerProxy.GetUserLibrary(user_id, gutenLibrary);
+                    library = ServerProxy.GetUserLibrary(user_id, gutenLibrary);
                 }
             }
         }
